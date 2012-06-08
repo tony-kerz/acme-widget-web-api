@@ -67,21 +67,49 @@ public class WidgetController implements InitializingBean
 		return new ResponseEntity<Widget>(widget, headers, HttpStatus.OK);
 	}
 
-	// @Transactional
 	@RequestMapping(value = WIDGET, method = RequestMethod.PUT)
 	public ResponseEntity<Widget> put(@PathVariable Long widgetId, @Valid @RequestBody Widget widget) throws URISyntaxException
 	{
 		log.debug("id={}, widget={}", widgetId, widget);
 
 		Widget putWidget = widgetDao.findOne(widgetId);
-		Assert.notNull(putWidget, "existing resource required");
 
-		propertyCopier.copyProperties(widget, putWidget);
+		HttpStatus status = null;
+		if (widget == null)
+		{
+			status = HttpStatus.NOT_FOUND;
+		}
+		else
+		{
+			propertyCopier.copyProperties(widget, putWidget);
+			putWidget = widgetDao.save(putWidget);
+			status = HttpStatus.OK;
+		}
 
-		putWidget = widgetDao.save(putWidget);
 		HttpHeaders headers = new HttpHeaders();
 		headers.setLocation(new URI(WIDGETS + '/' + widgetId));
-		return new ResponseEntity<Widget>(putWidget, headers, HttpStatus.OK);
+		return new ResponseEntity<Widget>(putWidget, headers, status);
+	}
+
+	@RequestMapping(value = WIDGET, method = RequestMethod.DELETE)
+	public ResponseEntity<Widget> delete(@PathVariable Long widgetId) throws URISyntaxException
+	{
+		log.debug("id={}", widgetId);
+
+		Widget widget = widgetDao.findOne(widgetId);
+
+		HttpStatus status = null;
+		if (widget == null)
+		{
+			status = HttpStatus.NOT_FOUND;
+		}
+		else
+		{
+			widgetDao.delete(widgetId);
+			status = HttpStatus.OK;
+		}
+
+		return new ResponseEntity<Widget>(status);
 	}
 
 	@Override
