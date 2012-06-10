@@ -9,7 +9,42 @@
 		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
 		">
+		
+	<bean id="propertyFilter.abstract" class="com.kerz.beans.PropertyFilter" abstract="true" />
+	<bean id="propertyProcessor.abstract" class="com.kerz.beans.PropertyProcessor" abstract="true" />
 
+	<bean id="globalPropertyFilter" parent="propertyFilter.abstract">
+		<property name="excludeProperties">
+			<set>
+				<value>new</value>
+				<value>class</value>
+			</set>
+		</property>
+	</bean>
+	
+	<bean id="serializerPropertyProcessor" parent="propertyProcessor.abstract">
+		<property name="propertyFilters">
+			<set>
+				<ref bean="globalPropertyFilter" />
+			</set>
+		</property>
+	</bean>
+
+	<bean id="deserializerPropertyProcessor" parent="propertyProcessor.abstract">
+		<property name="propertyFilters">
+			<set>
+				<ref bean="globalPropertyFilter" />
+				<bean parent="propertyFilter.abstract">
+					<property name="excludeProperties">
+						<set>
+							<value>id</value>
+						</set>
+					</property>
+				</bean>
+			</set>
+		</property>
+	</bean>
+	
 	<!-- customize jackson object mapper -->
 	<bean id="objectMapper" class="com.kerz.jackson.ObjectMapperFactoryBean">
 		<property name="module">
@@ -21,33 +56,19 @@
 				</property>
 				<property name="deserializerModifiers">
 					<list>
-						<bean class="com.kerz.jackson.CustomDeserializerModifier" p:propertyProcessor-ref="propertyProcessor" />
+						<bean class="com.kerz.jackson.CustomDeserializerModifier" p:propertyProcessor-ref="deserializerPropertyProcessor" />
+					</list>
+				</property>
+				<property name="serializerModifiers">
+					<list>
+						<bean class="com.kerz.jackson.CustomSerializerModifier" p:propertyProcessor-ref="serializerPropertyProcessor" />
 					</list>
 				</property>
 			</bean>
 		</property>
 	</bean>
 
-	<bean id="propertyFilter.abstract" class="com.kerz.beans.PropertyFilter" abstract="true" />
-	<bean id="propertyProcessor.abstract" class="com.kerz.beans.PropertyProcessor" abstract="true" />
-
-	<bean id="propertyProcessor" parent="propertyProcessor.abstract">
-		<property name="propertyFilters">
-			<set>
-				<bean parent="propertyFilter.abstract">
-					<property name="excludeProperties">
-						<set>
-							<value>class</value>
-							<value>id</value>
-							<value>new</value>
-						</set>
-					</property>
-				</bean>
-			</set>
-		</property>
-	</bean>
-
-	<bean class="com.kerz.beans.PropertyCopier" p:propertyProcessor-ref="propertyProcessor" />
+	<bean class="com.kerz.beans.PropertyCopier" p:propertyProcessor-ref="deserializerPropertyProcessor" />
 
 	<!-- use customized jackson object mapper here -->
 	<mvc:annotation-driven>

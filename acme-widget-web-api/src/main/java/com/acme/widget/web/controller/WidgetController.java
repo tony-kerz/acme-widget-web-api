@@ -61,6 +61,10 @@ public class WidgetController implements InitializingBean
 	public ResponseEntity<Widget> post(@Valid @RequestBody Widget widget) throws URISyntaxException
 	{
 		log.debug("widget={}", widget);
+
+		// current setup allows post json to set 'version' prop. if this is an
+		// issue, can use propertyCopier configured to filter version prop.
+
 		widgetDao.save(widget);
 		HttpHeaders headers = new HttpHeaders();
 		headers.setLocation(new URI(WIDGETS + '/' + widget.getId()));
@@ -75,7 +79,7 @@ public class WidgetController implements InitializingBean
 		Widget putWidget = widgetDao.findOne(widgetId);
 
 		HttpStatus status = null;
-		if (widget == null)
+		if (putWidget == null)
 		{
 			status = HttpStatus.NOT_FOUND;
 		}
