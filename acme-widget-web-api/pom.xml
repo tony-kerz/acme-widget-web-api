@@ -11,6 +11,12 @@
 	<groupId>com.acme</groupId>
 	<packaging>war</packaging>
 
+	<parent>
+		<groupId>com.kerz</groupId>
+		<artifactId>kerz-stack</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -76,8 +82,6 @@
 			<groupId>com.acme</groupId>
 			<artifactId>acme-widget-core</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
@@ -92,10 +96,13 @@
 		</dependency>
 	</dependencies>
 
-	<parent>
-		<groupId>com.kerz</groupId>
-		<artifactId>kerz-stack</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
-	</parent>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>

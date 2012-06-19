@@ -11,6 +11,7 @@
 	<logger name="com.acme.widget.web" level="DEBUG" />
 	<logger name="org.springframework.web" level="DEBUG" />
 	<logger name="org.codehaus.jackson" level="DEBUG" />
+	<logger name="com.jayway.restassured" level="TRACE" />
 	<logger name="com.kerz" level="DEBUG" />
 	<!-- <logger name="org.springframework.web" level="DEBUG" /> -->
 	<!-- <logger name="org.springframework.orm.jpa" level="DEBUG" /> -->
