@@ -46,22 +46,22 @@
 	</bean>
 	
 	<!-- customize jackson object mapper -->
-	<bean id="objectMapper" class="com.kerz.jackson.ObjectMapperFactoryBean">
+	<bean id="objectMapper" class="com.kerz.jackson2.ObjectMapperFactoryBean">
 		<property name="module">
-			<bean class="com.kerz.jackson.CustomModule">
+			<bean class="com.kerz.jackson2.CustomModule">
 				<property name="serializers">
 					<list>
-						<bean class="com.kerz.jackson.BindingResultSerializer" />
+						<bean class="com.kerz.jackson2.BindingResultSerializer" />
 					</list>
 				</property>
 				<property name="deserializerModifiers">
 					<list>
-						<bean class="com.kerz.jackson.CustomDeserializerModifier" p:propertyProcessor-ref="deserializerPropertyProcessor" />
+						<bean class="com.kerz.jackson2.CustomDeserializerModifier" p:propertyProcessor-ref="deserializerPropertyProcessor" />
 					</list>
 				</property>
 				<property name="serializerModifiers">
 					<list>
-						<bean class="com.kerz.jackson.CustomSerializerModifier" p:propertyProcessor-ref="serializerPropertyProcessor" />
+						<bean class="com.kerz.jackson2.CustomSerializerModifier" p:propertyProcessor-ref="serializerPropertyProcessor" />
 					</list>
 				</property>
 			</bean>
@@ -73,7 +73,7 @@
 	<!-- use customized jackson object mapper here -->
 	<mvc:annotation-driven>
 		<mvc:message-converters>
-			<bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" p:objectMapper-ref="objectMapper" />
+			<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" p:objectMapper-ref="objectMapper" />
 		</mvc:message-converters>
 	</mvc:annotation-driven>
 
@@ -89,7 +89,7 @@
 
 
 	<!-- use customized jackson object mapper here *too* -->
-	<bean class="com.kerz.mvc.view.BindingResultMappingJsonJacksonView" p:objectMapper-ref="objectMapper" />
+	<bean class="com.kerz.mvc.view.BindingResultMappingJackson2JsonView" p:objectMapper-ref="objectMapper" />
 
 	<bean class="com.kerz.mvc.handler.JsonExceptionResolver" />
 
