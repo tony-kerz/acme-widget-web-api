@@ -9,7 +9,7 @@
 		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
 		">
-		
+
 	<bean id="propertyFilter.abstract" class="com.kerz.beans.PropertyFilter" abstract="true" />
 	<bean id="propertyProcessor.abstract" class="com.kerz.beans.PropertyProcessor" abstract="true" />
 
@@ -21,7 +21,7 @@
 			</set>
 		</property>
 	</bean>
-	
+
 	<bean id="serializerPropertyProcessor" parent="propertyProcessor.abstract">
 		<property name="propertyFilters">
 			<set>
@@ -44,7 +44,16 @@
 			</set>
 		</property>
 	</bean>
-	
+
+	<!-- currently doesn't support (de)serializer-modifiers: https://jira.springsource.org/browse/SPR-10429 -->
+	<!-- <bean id="objectMapper" class="org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean"> -->
+	<!-- <property name="serializers"> -->
+	<!-- <list> -->
+	<!-- <bean class="com.kerz.jackson2.BindingResultSerializer" /> -->
+	<!-- </list> -->
+	<!-- </property> -->
+	<!-- </bean> -->
+
 	<!-- customize jackson object mapper -->
 	<bean id="objectMapper" class="com.kerz.jackson2.ObjectMapperFactoryBean">
 		<property name="module">
@@ -89,8 +98,7 @@
 
 
 	<!-- use customized jackson object mapper here *too* -->
-	<bean class="com.kerz.mvc.view.BindingResultMappingJackson2JsonView" p:objectMapper-ref="objectMapper" />
-
-	<bean class="com.kerz.mvc.handler.JsonExceptionResolver" />
+	<!-- <bean class="com.kerz.mvc.view.BindingResultMappingJackson2JsonView" p:objectMapper-ref="objectMapper" /> -->
+	<!-- <bean class="com.kerz.mvc.handler.JsonExceptionResolver" /> -->
 
 </beans>

@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -58,9 +59,15 @@ public class WidgetController implements InitializingBean
 	}
 
 	@RequestMapping(value = WIDGETS, method = RequestMethod.POST)
-	public ResponseEntity<Widget> post(@Valid @RequestBody Widget widget) throws URISyntaxException
+	public ResponseEntity<?> post(@Valid @RequestBody Widget widget, Errors errors) throws URISyntaxException
+	// public ResponseEntity<?> post(@Valid @RequestBody Widget widget) throws URISyntaxException
 	{
-		log.debug("widget={}", widget);
+		log.debug("widget={}, errors={}", widget, errors);
+
+		if (errors.hasErrors())
+		{
+			return new ResponseEntity<Errors>(errors, HttpStatus.BAD_REQUEST);
+		}
 
 		// current setup allows post json to set 'version' prop. if this is an
 		// issue, can use propertyCopier configured to filter version prop.
@@ -72,10 +79,15 @@ public class WidgetController implements InitializingBean
 	}
 
 	@RequestMapping(value = WIDGET, method = RequestMethod.PUT)
-	public ResponseEntity<Widget> put(@PathVariable Long widgetId, @Valid @RequestBody Widget widget) throws URISyntaxException
+	public ResponseEntity<?> put(@PathVariable Long widgetId, @Valid @RequestBody Widget widget, Errors errors) throws URISyntaxException
 	{
-		log.debug("id={}, widget={}", widgetId, widget);
-
+		log.debug("id={}, widget={}, errors={}", widgetId, widget, errors);
+		
+		if (errors.hasErrors())
+		{
+			return new ResponseEntity<Errors>(errors, HttpStatus.BAD_REQUEST);
+		}
+		
 		Widget putWidget = widgetDao.findOne(widgetId);
 
 		HttpStatus status = null;

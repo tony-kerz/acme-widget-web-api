@@ -14,9 +14,10 @@
 
 	<!-- see following link for doc on profiles: -->
 	<!-- http://static.springsource.org/spring/docs/3.1.x/javadoc-api/org/springframework/core/env/Environment.html#getActiveProfiles() -->
-	
+
 	<beans profile="default">
-		<context:property-placeholder location="/WEB-INF/property/application.properties, /WEB-INF/property/MySQL5.properties" />
+		<!-- <context:property-placeholder location="/WEB-INF/property/application.properties, /WEB-INF/property/MySQL5.properties" /> -->
+		<context:property-placeholder location="/WEB-INF/property/application.properties, /WEB-INF/property/HSQL.properties" />
 	</beans>
 
 	<beans profile="test">
