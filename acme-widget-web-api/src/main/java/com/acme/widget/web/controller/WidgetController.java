@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -79,15 +80,21 @@ public class WidgetController implements InitializingBean
 	}
 
 	@RequestMapping(value = WIDGET, method = RequestMethod.PUT)
-	public ResponseEntity<?> put(@PathVariable Long widgetId, @Valid @RequestBody Widget widget, Errors errors) throws URISyntaxException
+	public ResponseEntity<?> put(@PathVariable Long widgetId, @Valid @RequestBody Widget widget, Errors errors)
+			throws URISyntaxException
 	{
 		log.debug("id={}, widget={}, errors={}", widgetId, widget, errors);
-		
+
+		if (widget.getVersion() == null)
+		{
+			errors.rejectValue("version", "field-required");
+		}
+
 		if (errors.hasErrors())
 		{
 			return new ResponseEntity<Errors>(errors, HttpStatus.BAD_REQUEST);
 		}
-		
+
 		Widget putWidget = widgetDao.findOne(widgetId);
 
 		HttpStatus status = null;
@@ -101,7 +108,6 @@ public class WidgetController implements InitializingBean
 			putWidget = widgetDao.save(putWidget);
 			status = HttpStatus.OK;
 		}
-
 		HttpHeaders headers = new HttpHeaders();
 		headers.setLocation(new URI(WIDGETS + '/' + widgetId));
 		return new ResponseEntity<Widget>(putWidget, headers, status);
